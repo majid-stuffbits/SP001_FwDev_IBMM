@@ -1,15 +1,27 @@
 const int analogInPin = 33; // Replace with your chosen ESP32 analog input pin
-const float adcReferenceVoltage = 1.1; // ADC reference voltage of the ESP32
+const float adcReferenceVoltage = 3.3; // ADC reference voltage of the ESP32
 const float acs758Sensitivity = 0.04; // Sensitivity of ACS758 (40mV/A)
 
-void setup() {
-Serial.begin(115200);
+#define CURRENT_SENSOR_AC (1)
+
+void setup() 
+{
+  Serial.begin(115200);
+ 
 }
 
-void loop() {
+void loop() 
+{
 int adcValue = analogRead(analogInPin);
 float voltage = adcValue * adcReferenceVoltage / 4095; // Convert ADC reading to voltage
+
+
+#ifdef CURRENT_SENSOR_AC
 float current = voltage / acs758Sensitivity; // Calculate current using ACS758 sensitivity
+#else
+current = voltage / SENSE_RESISTOR;
+#endif
+analogWrite(25, 100);
 
 Serial.print("Raw ADC Value: ");
 Serial.print(adcValue);
